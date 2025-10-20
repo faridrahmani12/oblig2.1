@@ -1,8 +1,7 @@
 <?php
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Bruk verdiene fra "MySQL Database details" i Dokploy
-$host = "mysql-farah6535";   // ← sjekk hva det står hos deg i Dokploy
+$host = "localhost";         // ← dette er det viktige endringen!
 $user = "farah6535";
 $pass = "a999farah6535";
 $dbname = "farah6535";
@@ -14,3 +13,4 @@ try {
     die("Databaseforbindelse feilet.");
 }
 ?>
+

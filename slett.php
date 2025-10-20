@@ -2,22 +2,25 @@
 require 'db.php';
 
 if (!isset($_GET['type'], $_GET['kode'])) {
-    die("Ugyldig forespørsel");
+  http_response_code(400);
+  exit('Ugyldig forespørsel');
 }
 
 $type = $_GET['type'];
 $kode = $_GET['kode'];
 
 if ($type === 'klasse') {
-    $stmt = $pdo->prepare("DELETE FROM klasse WHERE klassekode = ?");
-    $stmt->execute([$kode]);
-    echo "<p>Klasse slettet!</p>";
-} elseif ($type === 'student') {
-    $stmt = $pdo->prepare("DELETE FROM student WHERE brukernavn = ?");
-    $stmt->execute([$kode]);
-    echo "<p>Student slettet!</p>";
-} else {
-    echo "<p>Ukjent type.</p>";
+  $stmt = $pdo->prepare("DELETE FROM klasse WHERE klassekode = ?");
+  $stmt->execute([$kode]);
+  header("Location: vis_klasser.php");
+  exit;
 }
-?>
-<p><a href="index.php">Tilbake til meny</a></p>
+if ($type === 'student') {
+  $stmt = $pdo->prepare("DELETE FROM student WHERE brukernavn = ?");
+  $stmt->execute([$kode]);
+  header("Location: vis_studenter.php");
+  exit;
+}
+
+http_response_code(400);
+echo "Ukjent type";

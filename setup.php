@@ -1,53 +1,40 @@
 <?php
-require_once __DIR__ . '/db.php';
+require_once 'db.php';
 
-// Opprett tabeller
-$sql1 = "CREATE TABLE IF NOT EXISTS klasse (
-  klassekode CHAR(5) NOT NULL,
-  klassenavn VARCHAR(100) NOT NULL,
-  studiumkode VARCHAR(50) NOT NULL,
-  PRIMARY KEY (klassekode)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+// Slett tabeller hvis de finnes (for testing)
+$conn->query("DROP TABLE IF EXISTS student");
+$conn->query("DROP TABLE IF EXISTS klasse");
 
-$sql2 = "CREATE TABLE IF NOT EXISTS student (
-  brukernavn CHAR(10) NOT NULL,
-  fornavn VARCHAR(100) NOT NULL,
-  etternavn VARCHAR(100) NOT NULL,
-  klassekode CHAR(5) NOT NULL,
-  PRIMARY KEY (brukernavn),
-  CONSTRAINT fk_student_klasse FOREIGN KEY (klassekode) REFERENCES klasse(klassekode)
-    ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+// Opprett tabell for klasse
+$conn->query("CREATE TABLE klasse (
+    klassekode VARCHAR(10) PRIMARY KEY,
+    klassenavn VARCHAR(50) NOT NULL,
+    studiumkode VARCHAR(20) NOT NULL
+)");
 
-$db->query($sql1);
-$db->query($sql2);
+// Opprett tabell for student
+$conn->query("CREATE TABLE student (
+    brukernavn VARCHAR(20) PRIMARY KEY,
+    fornavn VARCHAR(50) NOT NULL,
+    etternavn VARCHAR(50) NOT NULL,
+    klassekode VARCHAR(10),
+    FOREIGN KEY (klassekode) REFERENCES klasse(klassekode)
+)");
 
-// Seed data (idempotent)
-$k = $db->prepare("INSERT INTO klasse (klassekode, klassenavn, studiumkode)
-                   VALUES (?,?,?)
-                   ON DUPLICATE KEY UPDATE klassenavn=VALUES(klassenavn), studiumkode=VALUES(studiumkode)");
-$k->bind_param("sss", $kode, $navn, $stud);
+// Sett inn eksempeldata
+$conn->query("INSERT INTO klasse VALUES
+('IT1', 'IT og ledelse 1. år', 'ITLED'),
+('IT2', 'IT og ledelse 2. år', 'ITLED'),
+('IT3', 'IT og ledelse 3. år', 'ITLED')");
 
-$rowsK = [
-  ["IT1","IT og ledelse 1. år","ITLED"],
-  ["IT2","IT og ledelse 2. år","ITLED"],
-  ["IT3","IT og ledelse 3. år","ITLED"],
-];
-foreach ($rowsK as $r) { [$kode,$navn,$stud] = $r; $k->execute(); }
-$k->close();
+$conn->query("INSERT INTO student VALUES
+('gb', 'Geir', 'Bjarvin', 'IT1'),
+('mrj', 'Marius R.', 'Johannessen', 'IT1'),
+('tb', 'Tove', 'Bøe', 'IT2')");
 
-$s = $db->prepare("INSERT INTO student (brukernavn, fornavn, etternavn, klassekode)
-                   VALUES (?,?,?,?)
-                   ON DUPLICATE KEY UPDATE fornavn=VALUES(fornavn), etternavn=VALUES(etternavn), klassekode=VALUES(klassekode)");
-$s->bind_param("ssss", $bn, $fn, $en, $kk);
+echo "<h3>Tabeller opprettet og demo-data lagt inn!</h3>";
+echo "<a href='index.php'>Tilbake til meny</a>";
 
-$rowsS = [
-  ["gb","Geir","Bjarvin","IT1"],
-  ["mrj","Marius R.","Johannessen","IT1"],
-  ["tb","Tove","Bøe","IT2"],
-];
-foreach ($rowsS as $r) { [$bn,$fn,$en,$kk] = $r; $s->execute(); }
-$s->close();
-
-echo "Setup OK";
+$conn->close();
+?>
 

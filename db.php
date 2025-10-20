@@ -1,16 +1,13 @@
 <?php
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$host = 'mysql-' . getenv('USER') . '.dokploy.usn.no';
+$user = 'farah6535';
+$pass = 'a999farah6535';
+$dbname = 'farah6535';
 
-$host = "localhost";         // ← dette er det viktige endringen!
-$user = "farah6535";
-$pass = "a999farah6535";
-$dbname = "farah6535";
+$conn = new mysqli($host, $user, $pass, $dbname);
 
-try {
-    $db = new mysqli($host, $user, $pass, $dbname);
-    $db->set_charset("utf8mb4");
-} catch (Throwable $e) {
-    die("Databaseforbindelse feilet.");
+if ($conn->connect_error) {
+    die("Databaseforbindelse feilet: " . $conn->connect_error);
 }
 ?>
 

@@ -1,17 +1,23 @@
 <?php
-require 'db.php';
+require_once __DIR__ . '/db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $stmt = $pdo->prepare("INSERT INTO student (brukernavn, fornavn, etternavn, klassekode) VALUES (?, ?, ?, ?)");
-  $stmt->execute([$_POST['brukernavn'], $_POST['fornavn'], $_POST['etternavn'], $_POST['klassekode']]);
+  $stmt = $db->prepare("INSERT INTO student (brukernavn, fornavn, etternavn, klassekode) VALUES (?,?,?,?)");
+  $stmt->bind_param("ssss", $_POST['brukernavn'], $_POST['fornavn'], $_POST['etternavn'], $_POST['klassekode']);
+  $stmt->execute();
+  $stmt->close();
   header("Location: vis_studenter.php");
   exit;
 }
-$klasser = $pdo->query("SELECT klassekode, klassenavn FROM klasse ORDER BY klassekode")->fetchAll(PDO::FETCH_ASSOC);
+
+$klasser = [];
+$res = $db->query("SELECT klassekode, klassenavn FROM klasse ORDER BY klassekode");
+while ($row = $res->fetch_assoc()) { $klasser[] = $row; }
 ?>
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Registrer student</title>
   <style>
     body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:40px auto}
@@ -23,18 +29,18 @@ $klasser = $pdo->query("SELECT klassekode, klassenavn FROM klasse ORDER BY klass
   <h2>Registrer student</h2>
   <form method="post">
     <label>Brukernavn</label>
-    <input name="brukernavn" maxlength="10" required>
+    <input name="brukernavn" maxlength="10" required />
     <label>Fornavn</label>
-    <input name="fornavn" required>
+    <input name="fornavn" required />
     <label>Etternavn</label>
-    <input name="etternavn" required>
+    <input name="etternavn" required />
     <label>Klassekode</label>
     <select name="klassekode" required>
-      <?php foreach ($klasser as $k): ?>
-        <option value="<?= htmlspecialchars($k['klassekode']) ?>">
-          <?= htmlspecialchars($k['klassekode'].' - '.$k['klassenavn']) ?>
-        </option>
-      <?php endforeach; ?>
+      <?php foreach ($klasser as $k) {
+        echo "<option value=\"".htmlspecialchars($k['klassekode'])."\">"
+           . htmlspecialchars($k['klassekode'].' - '.$k['klassenavn'])
+           . "</option>";
+      } ?>
     </select>
     <p><button type="submit">Lagre</button> <a href="index.php">Avbryt</a></p>
   </form>

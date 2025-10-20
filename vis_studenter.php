@@ -1,8 +1,8 @@
-<?php require 'db.php'; ?>
+<?php require_once __DIR__ . '/db.php'; ?>
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Alle studenter</title>
   <style>
     body{font-family:system-ui,Arial,sans-serif;max-width:900px;margin:40px auto}
@@ -18,18 +18,19 @@
       <th>brukernavn</th><th>fornavn</th><th>etternavn</th><th>klassekode</th><th>Handling</th>
     </tr>
     <?php
-      $stmt = $pdo->query("SELECT brukernavn, fornavn, etternavn, klassekode FROM student ORDER BY brukernavn");
-      foreach ($stmt as $s):
+      $res = $db->query("SELECT brukernavn, fornavn, etternavn, klassekode FROM student ORDER BY brukernavn");
+      while ($s = $res->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>".htmlspecialchars($s['brukernavn'])."</td>";
+        echo "<td>".htmlspecialchars($s['fornavn'])."</td>";
+        echo "<td>".htmlspecialchars($s['etternavn'])."</td>";
+        echo "<td>".htmlspecialchars($s['klassekode'])."</td>";
+        echo "<td><a href=\"slett.php?type=student&kode=".urlencode($s['brukernavn'])."\">Slett</a></td>";
+        echo "</tr>";
+      }
     ?>
-    <tr>
-      <td><?= htmlspecialchars($s['brukernavn']) ?></td>
-      <td><?= htmlspecialchars($s['fornavn']) ?></td>
-      <td><?= htmlspecialchars($s['etternavn']) ?></td>
-      <td><?= htmlspecialchars($s['klassekode']) ?></td>
-      <td><a href="slett.php?type=student&kode=<?= urlencode($s['brukernavn']) ?>">Slett</a></td>
-    </tr>
-    <?php endforeach; ?>
   </table>
   <p><a href="index.php">Tilbake</a></p>
 </body>
 </html>
+

@@ -21,4 +21,4 @@ CREATE TABLE IF NOT EXISTS student (
 
 $pdo->exec($sql);
 echo "Tabellene er opprettet!";
-
+?>

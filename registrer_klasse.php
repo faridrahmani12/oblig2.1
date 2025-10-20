@@ -1,16 +1,33 @@
-<?php
+<<?php
 require 'db.php';
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $stmt = $pdo->prepare("INSERT INTO klasse (klassekode, klassenavn, studiumkode) VALUES (?, ?, ?)");
-    $stmt->execute([$_POST['klassekode'], $_POST['klassenavn'], $_POST['studiumkode']]);
-    echo "<p>Klasse registrert!</p>";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $stmt = $pdo->prepare("INSERT INTO klasse (klassekode, klassenavn, studiumkode) VALUES (?, ?, ?)");
+  $stmt->execute([$_POST['klassekode'], $_POST['klassenavn'], $_POST['studiumkode']]);
+  header("Location: vis_klasser.php");
+  exit;
 }
 ?>
-<form method="post">
-    Klassekode: <input name="klassekode" required><br>
-    Klassenavn: <input name="klassenavn" required><br>
-    Studiumkode: <input name="studiumkode" required><br>
-    <button type="submit">Lagre</button>
-</form>
-<p><a href="index.php">Tilbake til meny</a></p>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrer klasse</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:40px auto}
+    label{display:block;margin:10px 0 4px}
+    input{width:100%;padding:8px}
+  </style>
+</head>
+<body>
+  <h2>Registrer klasse</h2>
+  <form method="post">
+    <label>Klassekode</label>
+    <input name="klassekode" maxlength="5" required>
+    <label>Klassenavn</label>
+    <input name="klassenavn" required>
+    <label>Studiumkode</label>
+    <input name="studiumkode" required>
+    <p><button type="submit">Lagre</button> <a href="index.php">Avbryt</a></p>
+  </form>
+</body>
+</html>

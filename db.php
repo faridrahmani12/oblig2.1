@@ -1,18 +1,14 @@
 <?php
-$url = getenv("DATABASE_URL");
-$dbparts = parse_url($url);
-
-$host = $dbparts['host'];
-$dbname = ltrim($dbparts['path'], '/');
-$user = $dbparts['user'];
-$pass = $dbparts['pass'];
+$host = "mysql";               // USN sin database-server
+$dbname = "farah6535";         // Ditt databasenavn
+$user = "farah6535";           // Ditt brukernavn
+$pass = "a999farah6535";       // Ditt passord
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    die("Databaseforbindelse feilet: " . $e->getMessage());
 }
 ?>
-
 

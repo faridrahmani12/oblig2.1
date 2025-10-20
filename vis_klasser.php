@@ -1,8 +1,8 @@
-<?php require 'db.php'; ?>
+<?php require_once __DIR__ . '/db.php'; ?>
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Alle klasser</title>
   <style>
     body{font-family:system-ui,Arial,sans-serif;max-width:900px;margin:40px auto}
@@ -18,17 +18,18 @@
       <th>klassekode</th><th>klassenavn</th><th>studiumkode</th><th>Handling</th>
     </tr>
     <?php
-      $stmt = $pdo->query("SELECT klassekode, klassenavn, studiumkode FROM klasse ORDER BY klassekode");
-      foreach ($stmt as $k):
+      $res = $db->query("SELECT klassekode, klassenavn, studiumkode FROM klasse ORDER BY klassekode");
+      while ($k = $res->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>".htmlspecialchars($k['klassekode'])."</td>";
+        echo "<td>".htmlspecialchars($k['klassenavn'])."</td>";
+        echo "<td>".htmlspecialchars($k['studiumkode'])."</td>";
+        echo "<td><a href=\"slett.php?type=klasse&kode=".urlencode($k['klassekode'])."\">Slett</a></td>";
+        echo "</tr>";
+      }
     ?>
-    <tr>
-      <td><?= htmlspecialchars($k['klassekode']) ?></td>
-      <td><?= htmlspecialchars($k['klassenavn']) ?></td>
-      <td><?= htmlspecialchars($k['studiumkode']) ?></td>
-      <td><a href="slett.php?type=klasse&kode=<?= urlencode($k['klassekode']) ?>">Slett</a></td>
-    </tr>
-    <?php endforeach; ?>
   </table>
   <p><a href="index.php">Tilbake</a></p>
 </body>
 </html>
+

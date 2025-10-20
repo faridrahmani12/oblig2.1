@@ -1,5 +1,5 @@
 <?php
-$host = 'mysql-' . getenv('USER') . '.dokploy.usn.no';
+$host = 'mysql';
 $user = 'farah6535';
 $pass = 'a999farah6535';
 $dbname = 'farah6535';
